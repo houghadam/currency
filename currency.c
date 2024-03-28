@@ -14,6 +14,7 @@ void printSymbol(char*);
 void getInput(float *amountToConvert, char* baseCurrency, char **targetCurr);
 
 int main(int argc, char* argv[]) {
+    /* Create some variables and constants */
     float amountToConvert;
     char* baseCurrency;
     char **targetCurr = (char**) malloc(sizeof(char*) * MAX_CURRENCIES);
@@ -30,6 +31,8 @@ int main(int argc, char* argv[]) {
 		/* getInput(&amountToConvert, baseCurrency, targetCurr); */
         return 1;
 	}
+
+    /* If user enters '-help', display usage details */
     else if (argc == 2 && strcmp(argv[1], "-help") == 0) {
         printf("--Help menu--\n");
         printf("Program expects to receive input from command-line arguments\n");
@@ -40,6 +43,7 @@ int main(int argc, char* argv[]) {
         printf("Converts $1000 US Dollars to Euro, Yuan, Pound, and Yen.\n");
         return 0;
     }
+
     /* Read arguments */
 	else {
         /* Convert current value to float */
@@ -49,12 +53,17 @@ int main(int argc, char* argv[]) {
         /* Loop through remaining currencies and add to array */
         int i;
         for (i = 3; i < argc; i++){
+            /* Allocate space for each string */
             targetCurr[i - 3] = (char*) malloc(strlen(argv[i]) + 1);
+            /* If allocation is unsuccessful, alert user and exit */
             if (targetCurr[i - 3] == NULL) {
                 printf("Memory allocation failed.\n");
                 return 1;
             }
-            strcpy(targetCurr[i - 3], argv[i]);
+            /* Copy command-line input to array */
+            else {
+                strcpy(targetCurr[i - 3], argv[i]);
+            }
         }
     }
 
@@ -69,6 +78,7 @@ int main(int argc, char* argv[]) {
     strcat(script, echo);
     strcat(script, "\n");
     
+    /* Print summary of the upcoming conversion */
     printf("Converting ");
     printSymbol(baseCurrency);
     printf("%.2f %s to ", amountToConvert, baseCurrency);
@@ -94,14 +104,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    /* Create a buffer for data */
+    /* Create a buffer for data, fill with data from file, close file*/
     char buffer[10240];
     fread(buffer, 1, sizeof(buffer), data);
     fclose(data); 
 
     /* Parse json data */
     cJSON *json = cJSON_Parse(buffer); 
-    /* Look for key 'rates' in JSON data */
+    /* Look for 'rates' key in JSON data */
     cJSON *rates = cJSON_GetObjectItemCaseSensitive(json, "rates"); 
     printf("Checking rates...\n"); 
     printSymbol(baseCurrency);
@@ -123,8 +133,6 @@ int main(int argc, char* argv[]) {
             printf("No exchange rate available for %s\n", targetCurr[i]);
         } */
      
-    
-
     /* Cleanup */
     cJSON_Delete(json);
     int j;
@@ -136,6 +144,7 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
+/* A function to match currency to its symbol for aesthetic purposes only */
 void printSymbol(char* baseCurrency) {
     /* Print matching currency symbol */
     if (strcmp(baseCurrency, "USD") == 0) {
@@ -167,6 +176,7 @@ void printSymbol(char* baseCurrency) {
     }
 }
 
+/* A function to get input from the user if it is not supplied via command-line arguments */
 void getInput(float *amountToConvert, char* baseCurrency, char **targetCurr) {
     /* Create temp string to hold input */
     char* temp = (char*) malloc(sizeof(char) * 10);
