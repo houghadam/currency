@@ -22,7 +22,7 @@ Notes: All currencies must be entered using their corresponding 3 character code
 Converts $500 US Dollars to Euro
 
 `$./currency 675 EUR CNY JPY GBP`
-Converts €675 to Chinese Yuan Renminbi, Japanese Yen, and British Pound Sterling
+Converts €675 Euro to Chinese Yuan Renminbi, Japanese Yen, and British Pound Sterling
 
 ## Currency codes
 |Code|Name                         |Symbol|
