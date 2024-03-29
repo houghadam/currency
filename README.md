@@ -13,7 +13,7 @@ Arguments should be passed in the following order:
 1. Amount to be converted
 2. Currency to convert from
 3. Currency to convert to
-   Note: Any arguments beyond 3 will also be treated as currencies to convert to.
+Note: Any arguments beyond 3 will also be treated as currencies to convert to.
 
 ##### Examples:
 
