@@ -14,7 +14,7 @@ Arguments should be passed in the following order:
 2. Currency to convert from
 3. Currency to convert to
 
-Note: Any arguments beyond 3 will also be treated as currencies to convert to.
+Notes: All currencies must be entered using their corresponding 3 character code. Conversions to additional currencies can be made by passing additional arguments beyond those required above.
 
 ##### Examples:
 
@@ -23,3 +23,5 @@ Converts $500 US Dollars to Euro
 
 `$./currency 675 EUR CNY JPY GBP`
 Converts €675 to Chinese Yuan, Japanese Yen, and British Pounds Sterling
+
+## Currency codes
