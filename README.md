@@ -1,6 +1,6 @@
 # Currency
 
-#### A simple command-line currency converter written in c
+#### A simple, command-line currency converter written in c
 
 The goal of currency is to be a lightweight, fast, and simple to use currency converter. With support for more than 160 currencies, it provides currency conversions to the most used currencies around the world in seconds using real-time exchange rates from Currency Beacon [title](https://currencybeacon.com).
 
