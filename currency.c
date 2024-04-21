@@ -12,6 +12,11 @@
 /* Preview functions */
 void printSymbol(char*);
 void getInput(float *amountToConvert, char* baseCurrency, char **targetCurr);
+int isDollar(char* currency);
+int isPound(char* currency);
+int isRupee(char* currency);
+int isFranc(char* currency);
+
 
 int main(int argc, char* argv[]) {
     /* Create some variables and constants */
@@ -38,7 +43,7 @@ int main(int argc, char* argv[]) {
         printf("Program expects to receive input from command-line arguments\n");
         printf("Argument 1: Amount of currency to convert.\n");
         printf("Argument 2: Currency to convert from (3 character abbreviation).\n");
-        printf("Argument 3+: Currency to convert to (3 character abbreviation). Enter up to 20 currencies.\n");
+        printf("Argument 3+: Currency to convert to (3 character abbreviation). Enter up to 10 currencies.\n");
         printf("Example: 1000 USD EUR CNY GBP JPY\n");
         printf("Converts $1000 US Dollars to Euro, Yuan, Pound, and Yen.\n");
         return 0;
@@ -113,14 +118,23 @@ int main(int argc, char* argv[]) {
     cJSON *json = cJSON_Parse(buffer); 
     /* Look for 'rates' key in JSON data */
     cJSON *rates = cJSON_GetObjectItemCaseSensitive(json, "rates"); 
+    cJSON *rate = NULL;
     printf("Checking rates...\n"); 
     printSymbol(baseCurrency);
     printf("%.2f %s is:\n", amountToConvert, baseCurrency);
     /* Loop through target currencies */
     int k;
     for (k = 0; k < argc - 3; k++) {
-        /* TODO: Confirm currency exists in JSON data */
-
+        int found = 1;
+        /* Confirm currency exists in JSON data
+           return 0 if true */
+        cJSON_ArrayForEach(rate, rates) {
+            char *thisRate = rate->string;
+            if (strcmp(thisRate, targetCurr[k]) == 0) {
+                found = 0;
+            }
+        }
+        if (found == 0) {
             /* Retrieve exchange rate for current currency */
             double rate = cJSON_GetObjectItem(rates, targetCurr[k])->valuedouble;
             /* Perform conversion and print result */
@@ -128,10 +142,10 @@ int main(int argc, char* argv[]) {
             printSymbol(targetCurr[k]);
             printf("%.2f %s\n", conversion, targetCurr[k]);
         }
-        /* If exchange data isn't available */
-        /* else {
-            printf("No exchange rate available for %s\n", targetCurr[i]);
-        } */
+        else {
+            printf("Unable to locate matching currency.\n");
+        }
+    }
      
     /* Cleanup */
     cJSON_Delete(json);
@@ -145,31 +159,34 @@ int main(int argc, char* argv[]) {
 }
 
 /* A function to match currency to its symbol for aesthetic purposes only */
-void printSymbol(char* baseCurrency) {
+void printSymbol(char* currency) {
     /* Print matching currency symbol */
-    if (strcmp(baseCurrency, "USD") == 0) {
+    if (isDollar(currency) == 0) {
         printf("$");
     }
-    else if (strcmp(baseCurrency, "EUR") == 0) {
-        printf("€");
+    else if (strcmp(currency, "EUR") == 0) {
+        printf("€ ");
     }
-    else if (strcmp(baseCurrency, "GBP") == 0) {
-        printf("£");
+    if (isPound(currency) == 0) {
+        printf("£ ");
     }
-    else if (strcmp(baseCurrency, "JPY") == 0) {
-        printf("¥");
+    else if (strcmp(currency, "JPY") == 0) {
+        printf("¥ ");
     }
-    else if (strcmp(baseCurrency, "INR") == 0) {
-        printf("₹");
+    else if (strcmp(currency, "CNY") == 0) {
+        printf("¥ ");
     }
-    else if (strcmp(baseCurrency, "VND") == 0) {
-        printf("₫");
+    else if (strcmp(currency, "INR") == 0) {
+        printf("₹ ");
     }
-    else if (strcmp(baseCurrency, "MXN") == 0) {
-        printf("₱");
+    else if (strcmp(currency, "VND") == 0) {
+        printf("₫ ");
     }
-    else if (strcmp(baseCurrency, "CNY") == 0) {
-        printf("¥");
+    else if (isRupee(currency) == 0) {
+        printf("Rs ");
+    }
+    else if (isFranc(currency) == 0) {
+        printf("Fr ");
     }
     else {
         printf(" ");
@@ -214,4 +231,71 @@ void getInput(float *amountToConvert, char* baseCurrency, char **targetCurr) {
         strcpy(targetCurr[i], temp);
         i++;
     }
+}
+
+int isDollar(char* currency) {
+    /* Create an array of currencies that use $ */
+    const char* array[] = {"ARS", "AUD", "BBD", "BMD", "BND", "BSD", 
+    "BZD", "CAD", "CLP", "COP", "CUC", "CUP", "CVE", "DOP", "FJD", "GYD",
+    "HKD", "JMD", "KYD", "LRD", "MXN", "NAD", "NZD", "SBD", "SGD", "SRD", 
+    "TTD", "TWD", "USD", "UYU", "XCD", "ZWL"
+    };
+    int i;
+    /* Loop through array looking for input currency, return 0 if found */
+    for (i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
+        if (strcmp(currency, array[i]) == 0) {
+            return 0;
+        }
+    }
+    /* Return 1 if not found */
+    return 1;
+
+}
+
+int isPound(char* currency) {
+    /* Create an array of currencies that use $ */
+    const char* array[] = {"FKP", "GBP", "GIP", "SDG", "SHP"
+    };
+    int i;
+    /* Loop through array looking for input currency, return 0 if found */
+    for (i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
+        if (strcmp(currency, array[i]) == 0) {
+            return 0;
+        }
+    }
+    /* Return 1 if not found */
+    return 1;
+
+}
+
+int isRupee(char* currency) {
+    /* Create an array of currencies that use $ */
+    const char* array[] = {"LKR", "MUR", "NPR", "PKR", "SCR"
+    };
+    int i;
+    /* Loop through array looking for input currency, return 0 if found */
+    for (i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
+        if (strcmp(currency, array[i]) == 0) {
+            return 0;
+        }
+    }
+    /* Return 1 if not found */
+    return 1;
+
+}
+
+int isFranc(char* currency) {
+    /* Create an array of currencies that use $ */
+    const char* array[] = {"BIF", "CDF", "GNF", "KMF", "XAF", "XOF", "XFP"
+    };
+    int i;
+    /* Loop through array looking for input currency, return 0 if found */
+    for (i = 0; i < sizeof(array) / sizeof(array[0]); i++) {
+        if (strcmp(currency, array[i]) == 0) {
+            return 0;
+        }
+    }
+    /* Return 1 if not found */
+    return 1;
+
 }
