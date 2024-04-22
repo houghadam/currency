@@ -3,6 +3,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 
 #define MAX_ENTRY_SIZE 3
 #define MAX_CURRENCIES 10
@@ -33,7 +34,6 @@ int main(int argc, char* argv[]) {
     /* Check to make sure 2 arguments were passed */
 	if (argc < 2) {
         printf("Failed to provide input. See -help for info.\n");
-		/* getInput(&amountToConvert, baseCurrency, targetCurr); */
         return 1;
 	}
 
@@ -42,8 +42,8 @@ int main(int argc, char* argv[]) {
         printf("--Help menu--\n");
         printf("Program expects to receive input from command-line arguments\n");
         printf("Argument 1: Amount of currency to convert.\n");
-        printf("Argument 2: Currency to convert from (3 character abbreviation).\n");
-        printf("Argument 3+: Currency to convert to (3 character abbreviation). Enter up to 10 currencies.\n");
+        printf("Argument 2: Currency to convert from (3 character abbreviation in UPPERCASE).\n");
+        printf("Argument 3+: Currency to convert to (3 character abbreviation in UPPERCASE). Enter up to 10 currencies.\n");
         printf("Example: 1000 USD EUR CNY GBP JPY\n");
         printf("Converts $1000 US Dollars to Euro, Yuan, Pound, and Yen.\n");
         return 0;
@@ -99,6 +99,7 @@ int main(int argc, char* argv[]) {
     }
 
     /* Execute script to retrieve live exchange rates*/
+    printf("Checking rates...\n"); 
     system(script);
 
     /* Create a variable to hold json data */
@@ -119,7 +120,6 @@ int main(int argc, char* argv[]) {
     /* Look for 'rates' key in JSON data */
     cJSON *rates = cJSON_GetObjectItemCaseSensitive(json, "rates"); 
     cJSON *rate = NULL;
-    printf("Checking rates...\n"); 
     printSymbol(baseCurrency);
     printf("%.2f %s is:\n", amountToConvert, baseCurrency);
     /* Loop through target currencies */
@@ -190,46 +190,6 @@ void printSymbol(char* currency) {
     }
     else {
         printf(" ");
-    }
-}
-
-/* A function to get input from the user if it is not supplied via command-line arguments */
-void getInput(float *amountToConvert, char* baseCurrency, char **targetCurr) {
-    /* Create temp string to hold input */
-    char* temp = (char*) malloc(sizeof(char) * 10);
-    int numCurr;
-
-    /* Get amount to convert from user */
-    printf("Enter amount to convert: ");
-    fgets(temp, 10, stdin);
-
-    /* Convert and save user input */
-    *amountToConvert = atof(temp);
-
-    /* Get base currency from user */
-    printf("Enter base currency: ");
-    fgets(temp, 10, stdin);
-
-    /* Save base currency */
-    baseCurrency = temp;
-
-    printf("How many currencies would you like to convert to: ");
-    fgets(temp, 2, stdin);
-    numCurr = atoi(temp);
-
-    /* Loop until all currencies have been entered */
-    int i = 0;
-    while (i < numCurr) {
-        printf("Enter target currency: ");
-        fgets(temp, 4, stdin);
-        /* Allocate space for string */
-        targetCurr[i] = (char*) malloc(strlen(temp) + 1);
-        if (targetCurr[i] == NULL) {
-            printf("Memory allocation failed.\n");
-        }
-        /* Copy input value to string array */
-        strcpy(targetCurr[i], temp);
-        i++;
     }
 }
 
