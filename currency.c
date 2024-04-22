@@ -32,6 +32,9 @@ int main(int argc, char* argv[]) {
     /* Check to make sure 2 arguments were passed */
 	if (argc < 2) {
         printf("Failed to provide input. See -help for info.\n");
+        free(targetCurr);
+        free(script);
+        free(url);
         return 1;
 	}
 
@@ -44,6 +47,9 @@ int main(int argc, char* argv[]) {
         printf("Argument 3+: Currency to convert to (3 character abbreviation in UPPERCASE). Enter up to 10 currencies.\n");
         printf("Example: 1000 USD EUR CNY GBP JPY\n");
         printf("Converts $1000 US Dollars to Euro, Yuan, Pound, and Yen.\n");
+        free(targetCurr);
+        free(script);
+        free(url);
         return 0;
     }
 
@@ -148,10 +154,12 @@ int main(int argc, char* argv[]) {
     /* Cleanup */
     cJSON_Delete(json);
     int j;
-    for (j = 0; i < argc - 3; j++) {
+    for (j = 0; j < argc - 3; j++) {
         free(targetCurr[j]);
     }
     free(targetCurr);
+    free(script);
+    free(url);
     
     return 0;
 }
