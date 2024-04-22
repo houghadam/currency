@@ -3,7 +3,6 @@
 #include "cJSON.h"
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h>
 
 #define MAX_ENTRY_SIZE 3
 #define MAX_CURRENCIES 10
@@ -12,7 +11,6 @@
 
 /* Preview functions */
 void printSymbol(char*);
-void getInput(float *amountToConvert, char* baseCurrency, char **targetCurr);
 int isDollar(char* currency);
 int isPound(char* currency);
 int isRupee(char* currency);
