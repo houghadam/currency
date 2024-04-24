@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     char *script = (char*) malloc(sizeof(char) * MAX_SCRIPT_LENGTH);
     char *url = (char*) malloc(sizeof(char) * MAX_URL_LENGTH);
     const char *urlBase = "URL=\"https://api.currencybeacon.com/v1/latest?base=";
-    const char *apiKey = "&api_key=LIC5zNao9c026OJdEfOV8ILIwDV8Bvqs\"";
+    const char *apiKey = "&api_key=< INSERT API KEY HERE >\"";
     const char *response = "response=$(curl -s -w \"%{http_code}\" $URL)";
     const char *echo = "echo \"$response\" > currency_rates.json";
 
@@ -171,7 +171,7 @@ void printSymbol(char* currency) {
         printf("$");
     }
     else if (strcmp(currency, "EUR") == 0) {
-        printf("€ ");
+        printf("€");
     }
     if (isPound(currency) == 0) {
         printf("£ ");
